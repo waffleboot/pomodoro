@@ -55,9 +55,8 @@ const (
 )
 
 type item struct {
-	typ       typ
-	elapsed   int
-	totaltime int
+	typ     typ
+	elapsed int
 }
 
 func calc(cfg *config) []item {
@@ -80,34 +79,31 @@ func calc(cfg *config) []item {
 		workCount++
 		if remainder := remainder(work, total); remainder <= cfg.work {
 			result = append(result, item{
-				typ:       WORK,
-				elapsed:   remainder,
-				totaltime: total + remainder,
+				typ:     WORK,
+				elapsed: remainder,
 			})
 			return result
 		}
 		work += cfg.work
 		total += cfg.work
 		result = append(result, item{
-			typ:       WORK,
-			elapsed:   cfg.work,
-			totaltime: total,
+			typ:     WORK,
+			elapsed: cfg.work,
 		})
-		typ := SMALL
-		period := cfg.small
+		relaxtype := SMALL
+		relaxperiod := cfg.small
 		if workCount == cfg.worklimit {
+			relaxperiod = cfg.large
+			relaxtype = LARGE
 			workCount = 0
-			period = cfg.large
-			typ = LARGE
 		}
-		if remainder(work, total+period) <= 0 {
+		if remainder(work, total+relaxperiod) <= 0 {
 			return result
 		}
-		total += period
+		total += relaxperiod
 		result = append(result, item{
-			typ:       typ,
-			elapsed:   period,
-			totaltime: total,
+			typ:     relaxtype,
+			elapsed: relaxperiod,
 		})
 
 	}
