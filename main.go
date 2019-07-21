@@ -20,58 +20,20 @@ func p(t int) string {
 	return fmt.Sprintf("%02d:%02d", h, m)
 }
 
-const (
-	WORK = iota
-	SMALL
-	LARGE
-)
-
 func main() {
-	var totalTime, workingTime, relaxingTime, workingCount, state int
-	argWorkingTime, argSmallRelaxTime, argLargeRelaxTime, argLargeRelaxAfterEachWork := read(1), read(2), read(3), read(4)
-
-	var hr, mi int
-	fmt.Sscanf(os.Args[5], "%d:%d", &hr, &mi)
-	m := hr*60 + mi
-
-loop:
-	for {
-		switch state {
+	cfg := newConfig()
+	var workingTime, relaxingTime int
+	for _, item := range calc(cfg) {
+		switch item.typ {
 		case WORK:
-			state = SMALL
-			workingCount++
-			if totalTime+argWorkingTime < m {
-				workingTime += argWorkingTime
-				totalTime += argWorkingTime
-				if workingCount == argLargeRelaxAfterEachWork {
-					workingCount = 0
-					state = LARGE
-				}
-				fmt.Printf("%-20s%v\n", "рабочий интервал", p(totalTime))
-			} else {
-				workingTime += m - totalTime
-				totalTime = m
-				fmt.Printf("%-20s%v\n", "рабочий интервал", p(totalTime))
-				break loop
-			}
+			workingTime += item.elapsed
+			fmt.Printf("%-20s%v\n", "рабочий интервал", p(item.totaltime))
 		case SMALL:
-			state = WORK
-			if totalTime+argSmallRelaxTime < m {
-				relaxingTime += argSmallRelaxTime
-				totalTime += argSmallRelaxTime
-				fmt.Printf("%-20s%v\n", "короткий перерыв", p(totalTime))
-			} else {
-				break loop
-			}
+			relaxingTime += item.elapsed
+			fmt.Printf("%-20s%v\n", "короткий перерыв", p(item.totaltime))
 		case LARGE:
-			state = WORK
-			if totalTime+argLargeRelaxTime < m {
-				relaxingTime += argLargeRelaxTime
-				totalTime += argLargeRelaxTime
-				fmt.Printf("%-20s%v\n", "БОЛЬШОЙ ПЕРЕРЫВ ---", p(totalTime))
-			} else {
-				break loop
-			}
+			relaxingTime += item.elapsed
+			fmt.Printf("%-20s%v\n", "БОЛЬШОЙ ПЕРЕРЫВ ---", p(item.totaltime))
 		}
 	}
 	fmt.Println("-------------------------")
