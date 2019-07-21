@@ -18,10 +18,9 @@ func makeRemainder(cfg *config) func(int, int) int {
 		return func(work int, total int) int {
 			return cfg.timelimit - work
 		}
-	} else {
-		return func(work int, total int) int {
-			return cfg.timelimit - total
-		}
+	}
+	return func(work int, total int) int {
+		return cfg.timelimit - total
 	}
 }
 

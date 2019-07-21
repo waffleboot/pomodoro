@@ -1,5 +1,5 @@
 all: *.go
-	go build
+	go build ; go test
 	
 test: *.go
 	go test
