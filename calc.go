@@ -14,6 +14,10 @@ type config struct {
 	timelimit int
 }
 
+func (cfg *config) limit(total int) bool {
+	return total >= cfg.timelimit
+}
+
 func newConfig() *config {
 	c := &config{}
 	read := func(arg int) int {
@@ -73,7 +77,7 @@ func calc(cfg *config) []item {
 		if workCount == cfg.worklimit {
 			workCount = 0
 			total += cfg.large
-			if total >= cfg.timelimit {
+			if cfg.limit(total) {
 				return result
 			}
 			result = append(result, item{
@@ -83,7 +87,7 @@ func calc(cfg *config) []item {
 			})
 		} else {
 			total += cfg.small
-			if total >= cfg.timelimit {
+			if cfg.limit(total) {
 				return result
 			}
 			result = append(result, item{
