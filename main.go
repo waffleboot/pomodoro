@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 	// "net/http"
 	// "os"
 	// "os/signal"
@@ -36,32 +37,34 @@ func main() {
 
 	cfg := newConfig()
 	var totalTime, workCount, workTime, relaxTime, smallCount, largeCount int
+	now := time.Now()
 	items := calc(cfg)
 	for i := range items {
 		item := &items[i]
 		totalTime += item.elapsed
+		t := now.Add(time.Duration(totalTime) * time.Minute).Format("15:04")
 		switch item.typ {
 		case WORK:
 			workCount++
 			workTime += item.elapsed
 			if cfg.verbose {
 				if item.elapsed == cfg.work {
-					fmt.Printf("%-20s%v\n", "рабочий интервал", p(totalTime))
+					fmt.Printf("%-20s%v | %s\n", "рабочий интервал", p(totalTime), t)
 				} else {
-					fmt.Printf("%-20s%v (%d)\n", "рабочий интервал", p(totalTime), item.elapsed)
+					fmt.Printf("%-20s%v | %s +%d\n", "рабочий интервал", p(totalTime), t, item.elapsed)
 				}
 			}
 		case SMALL:
 			smallCount++
 			relaxTime += item.elapsed
 			if cfg.verbose {
-				fmt.Printf("%-20s%v\n", "короткий перерыв", p(totalTime))
+				fmt.Printf("%-20s%v | %s\n", "короткий перерыв", p(totalTime), t)
 			}
 		case LARGE:
 			largeCount++
 			relaxTime += item.elapsed
 			if cfg.verbose {
-				fmt.Printf("%-20s%v\n", "БОЛЬШОЙ ПЕРЕРЫВ ---", p(totalTime))
+				fmt.Printf("%-20s%v | %s\n", "БОЛЬШОЙ ПЕРЕРЫВ ---", p(totalTime), t)
 			}
 		}
 	}
