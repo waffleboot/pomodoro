@@ -13,14 +13,20 @@ func p(t int) string {
 func main() {
 	cfg := newConfig()
 	var totalTime, workCount, workTime, relaxTime, smallCount, largeCount int
-	for _, item := range calc(cfg) {
+	items := calc(cfg)
+	for i := range items {
+		item := &items[i]
 		totalTime += item.elapsed
 		switch item.typ {
 		case WORK:
 			workCount++
 			workTime += item.elapsed
 			if cfg.verbose {
-				fmt.Printf("%-20s%v\n", "рабочий интервал", p(totalTime))
+				if item.elapsed == cfg.work {
+					fmt.Printf("%-20s%v\n", "рабочий интервал", p(totalTime))
+				} else {
+					fmt.Printf("%-20s%v (%d)\n", "рабочий интервал", p(totalTime), item.elapsed)
+				}
 			}
 		case SMALL:
 			smallCount++
