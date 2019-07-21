@@ -1,8 +1,8 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"os"
 	"strconv"
 )
 
@@ -12,29 +12,35 @@ type config struct {
 	large     int
 	worklimit int
 	timelimit int
+	mode      bool
 }
 
-func (cfg *config) remainder(work int, total int) int {
-	return cfg.timelimit - total
+func parsehhmm(s string) int {
+	var hr, mi int
+	fmt.Sscanf(s, "%d:%d", &hr, &mi)
+	return hr*60 + mi
 }
 
 func newConfig() *config {
+
 	c := &config{}
+
+	flag.BoolVar(&c.mode, "w", false, "mode")
+	flag.Parse()
+
 	read := func(arg int) int {
-		v, err := strconv.ParseInt(os.Args[arg], 10, 64)
+		v, err := strconv.ParseInt(flag.Arg(arg), 10, 64)
 		if err != nil {
 			panic(err)
 		}
 		return int(v)
 	}
-	c.work = read(1)
-	c.small = read(2)
-	c.large = read(3)
-	c.worklimit = read(4)
+	c.work = read(0)
+	c.small = read(1)
+	c.large = read(2)
+	c.worklimit = read(3)
+	c.timelimit = parsehhmm(flag.Arg(4))
 
-	var hr, mi int
-	fmt.Sscanf(os.Args[5], "%d:%d", &hr, &mi)
-	c.timelimit = hr*60 + mi
 	return c
 }
 
@@ -55,9 +61,22 @@ type item struct {
 func calc(cfg *config) []item {
 	result := make([]item, 0, 10)
 	var work, total, workCount int
+
+	var remainder func(int, int) int
+
+	if cfg.mode {
+		remainder = func(work int, total int) int {
+			return cfg.timelimit - work
+		}
+	} else {
+		remainder = func(work int, total int) int {
+			return cfg.timelimit - total
+		}
+	}
+
 	for {
 		workCount++
-		if remainder := cfg.remainder(work, total); remainder <= cfg.work {
+		if remainder := remainder(work, total); remainder <= cfg.work {
 			result = append(result, item{
 				typ:       WORK,
 				elapsed:   remainder,
@@ -74,7 +93,7 @@ func calc(cfg *config) []item {
 		})
 		if workCount == cfg.worklimit {
 			workCount = 0
-			if cfg.remainder(work, total+cfg.large) <= 0 {
+			if remainder(work, total+cfg.large) <= 0 {
 				return result
 			}
 			total += cfg.large
@@ -84,7 +103,7 @@ func calc(cfg *config) []item {
 				totaltime: total,
 			})
 		} else {
-			if cfg.remainder(work, total+cfg.small) <= 0 {
+			if remainder(work, total+cfg.small) <= 0 {
 				return result
 			}
 			total += cfg.small
