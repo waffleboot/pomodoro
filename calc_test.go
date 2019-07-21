@@ -6,11 +6,11 @@ import (
 
 func TestTimeLimit(t *testing.T) {
 	cfg := &config{
-		work:      25,
+		work:      30,
 		small:     5,
 		large:     15,
 		worklimit: 2,
-		timelimit: parsehhmm("8:00"),
+		timelimit: parsehhmm("2:10"),
 	}
 	var workingCount, workingTime, relaxingTime int
 	for _, item := range calc(cfg) {
@@ -21,25 +21,25 @@ func TestTimeLimit(t *testing.T) {
 			relaxingTime += item.elapsed
 		}
 	}
-	if workingCount != 14 {
-		t.Fail()
+	if workingCount != 4 {
+		t.Error(workingCount)
 	}
-	if workingTime != parsehhmm("5:50") {
-		t.Fail()
+	if workingTime != parsehhmm("1:45") {
+		t.Error(workingTime)
 	}
-	if relaxingTime != parsehhmm("2:05") {
-		t.Fail()
+	if relaxingTime != parsehhmm("0:25") {
+		t.Error(relaxingTime)
 	}
 }
 
 func TestWorkLimit(t *testing.T) {
 	cfg := &config{
-		work:      25,
+		work:      30,
 		small:     5,
 		large:     15,
 		worklimit: 2,
+		timelimit: parsehhmm("2:10"),
 		mode:      true,
-		timelimit: parsehhmm("8:00"),
 	}
 	var workingCount, workingTime, relaxingTime int
 	for _, item := range calc(cfg) {
@@ -50,13 +50,13 @@ func TestWorkLimit(t *testing.T) {
 			relaxingTime += item.elapsed
 		}
 	}
-	if workingCount != 20 {
-		t.Fail()
+	if workingCount != 5 {
+		t.Error(workingCount)
 	}
-	if workingTime != parsehhmm("8:00") {
-		t.Fail()
+	if workingTime != parsehhmm("2:10") {
+		t.Error(workingTime)
 	}
-	if relaxingTime != parsehhmm("3:05") {
-		t.Fail()
+	if relaxingTime != parsehhmm("0:40") {
+		t.Error(relaxingTime)
 	}
 }

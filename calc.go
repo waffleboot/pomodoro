@@ -25,7 +25,7 @@ func makeRemainder(cfg *config) func(int, int) int {
 }
 
 func calc(cfg *config) []item {
-	result := make([]item, 0, 10)
+	items := make([]item, 0, 10)
 	var work, total, workCount int
 
 	remainder := makeRemainder(cfg)
@@ -33,15 +33,15 @@ func calc(cfg *config) []item {
 	for {
 		workCount++
 		if remainder := remainder(work, total); remainder <= cfg.work {
-			result = append(result, item{
+			items = append(items, item{
 				typ:     WORK,
 				elapsed: remainder,
 			})
-			return result
+			return items
 		}
 		work += cfg.work
 		total += cfg.work
-		result = append(result, item{
+		items = append(items, item{
 			typ:     WORK,
 			elapsed: cfg.work,
 		})
@@ -52,11 +52,11 @@ func calc(cfg *config) []item {
 			relaxtype = LARGE
 			workCount = 0
 		}
-		if remainder(work, total+relaxperiod) <= 0 {
-			return result
-		}
 		total += relaxperiod
-		result = append(result, item{
+		if remainder(work, total) <= 0 {
+			return items
+		}
+		items = append(items, item{
 			typ:     relaxtype,
 			elapsed: relaxperiod,
 		})

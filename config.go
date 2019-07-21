@@ -19,6 +19,7 @@ type config struct {
 func newConfig() *config {
 
 	c := &config{}
+
 	flag.BoolVar(&c.mode, "w", false, "mode")
 	flag.BoolVar(&c.verbose, "v", false, "verbose")
 	flag.Parse()
