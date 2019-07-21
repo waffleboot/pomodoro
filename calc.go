@@ -93,27 +93,22 @@ func calc(cfg *config) []item {
 			elapsed:   cfg.work,
 			totaltime: total,
 		})
+		typ := SMALL
+		period := cfg.small
 		if workCount == cfg.worklimit {
 			workCount = 0
-			if remainder(work, total+cfg.large) <= 0 {
-				return result
-			}
-			total += cfg.large
-			result = append(result, item{
-				typ:       LARGE,
-				elapsed:   cfg.large,
-				totaltime: total,
-			})
-		} else {
-			if remainder(work, total+cfg.small) <= 0 {
-				return result
-			}
-			total += cfg.small
-			result = append(result, item{
-				typ:       SMALL,
-				elapsed:   cfg.small,
-				totaltime: total,
-			})
+			period = cfg.large
+			typ = LARGE
 		}
+		if remainder(work, total+period) <= 0 {
+			return result
+		}
+		total += period
+		result = append(result, item{
+			typ:       typ,
+			elapsed:   period,
+			totaltime: total,
+		})
+
 	}
 }
