@@ -19,18 +19,10 @@ type config struct {
 func newConfig() *config {
 
 	c := &config{}
-
 	flag.BoolVar(&c.mode, "w", false, "mode")
 	flag.BoolVar(&c.verbose, "v", false, "verbose")
 	flag.Parse()
 
-	read := func(arg int) int {
-		v, err := strconv.ParseInt(flag.Arg(arg), 10, 64)
-		if err != nil {
-			panic(err)
-		}
-		return int(v)
-	}
 	c.work = read(0)
 	c.small = read(1)
 	c.large = read(2)
@@ -44,4 +36,12 @@ func parsehhmm(s string) int {
 	var hr, mi int
 	fmt.Sscanf(s, "%d:%d", &hr, &mi)
 	return hr*60 + mi
+}
+
+func read(arg int) int {
+	v, err := strconv.ParseInt(flag.Arg(arg), 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	return int(v)
 }
