@@ -2,17 +2,7 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strconv"
 )
-
-func read(arg int) int {
-	n, err := strconv.ParseInt(os.Args[arg], 10, 64)
-	if err != nil {
-		panic(err)
-	}
-	return int(n)
-}
 
 func p(t int) string {
 	h := t / 60

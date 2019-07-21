@@ -14,8 +14,8 @@ type config struct {
 	timelimit int
 }
 
-func (cfg *config) limit(total int) bool {
-	return total >= cfg.timelimit
+func (cfg *config) remainder(work int, total int) int {
+	return cfg.timelimit - total
 }
 
 func newConfig() *config {
@@ -54,42 +54,40 @@ type item struct {
 
 func calc(cfg *config) []item {
 	result := make([]item, 0, 10)
-	var total, workCount int
+	var work, total, workCount int
 	for {
-		if total+cfg.work < cfg.timelimit {
-			total += cfg.work
-			result = append(result, item{
-				typ:       WORK,
-				elapsed:   cfg.work,
-				totaltime: total,
-			})
-		} else {
-			remainder := cfg.timelimit - total
-			total += remainder
+		workCount++
+		if remainder := cfg.remainder(work, total); remainder <= cfg.work {
 			result = append(result, item{
 				typ:       WORK,
 				elapsed:   remainder,
-				totaltime: total,
+				totaltime: total + remainder,
 			})
 			return result
 		}
-		workCount++
+		work += cfg.work
+		total += cfg.work
+		result = append(result, item{
+			typ:       WORK,
+			elapsed:   cfg.work,
+			totaltime: total,
+		})
 		if workCount == cfg.worklimit {
 			workCount = 0
-			total += cfg.large
-			if cfg.limit(total) {
+			if cfg.remainder(work, total+cfg.large) <= 0 {
 				return result
 			}
+			total += cfg.large
 			result = append(result, item{
 				typ:       LARGE,
 				elapsed:   cfg.large,
 				totaltime: total,
 			})
 		} else {
-			total += cfg.small
-			if cfg.limit(total) {
+			if cfg.remainder(work, total+cfg.small) <= 0 {
 				return result
 			}
+			total += cfg.small
 			result = append(result, item{
 				typ:       SMALL,
 				elapsed:   cfg.small,
