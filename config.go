@@ -24,11 +24,25 @@ func newConfig() *config {
 	flag.BoolVar(&c.verbose, "v", false, "verbose")
 	flag.Parse()
 
-	c.work = read(0)
-	c.small = read(1)
-	c.large = read(2)
-	c.worklimit = read(3)
-	c.timelimit = parsehhmm(flag.Arg(4))
+	if flag.NArg() == 1 {
+		c.work = 25
+		c.small = 5
+		c.large = 15
+		c.worklimit = 4
+		c.timelimit = parsehhmm(flag.Arg(0))
+	} else if flag.NArg() == 2 {
+		c.work = read(0)
+		c.small = 5
+		c.large = 15
+		c.worklimit = 4
+		c.timelimit = parsehhmm(flag.Arg(1))
+	} else {
+		c.work = read(0)
+		c.small = read(1)
+		c.large = read(2)
+		c.worklimit = read(3)
+		c.timelimit = parsehhmm(flag.Arg(4))
+	}
 
 	return c
 }
