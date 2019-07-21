@@ -13,21 +13,23 @@ type item struct {
 	elapsed int
 }
 
+func makeRemainder(cfg *config) func(int, int) int {
+	if cfg.mode {
+		return func(work int, total int) int {
+			return cfg.timelimit - work
+		}
+	} else {
+		return func(work int, total int) int {
+			return cfg.timelimit - total
+		}
+	}
+}
+
 func calc(cfg *config) []item {
 	result := make([]item, 0, 10)
 	var work, total, workCount int
 
-	var remainder func(int, int) int
-
-	if cfg.mode {
-		remainder = func(work int, total int) int {
-			return cfg.timelimit - work
-		}
-	} else {
-		remainder = func(work int, total int) int {
-			return cfg.timelimit - total
-		}
-	}
+	remainder := makeRemainder(cfg)
 
 	for {
 		workCount++
