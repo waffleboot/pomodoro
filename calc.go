@@ -13,6 +13,7 @@ type config struct {
 	worklimit int
 	timelimit int
 	mode      bool
+	verbose   bool
 }
 
 func parsehhmm(s string) int {
@@ -26,6 +27,7 @@ func newConfig() *config {
 	c := &config{}
 
 	flag.BoolVar(&c.mode, "w", false, "mode")
+	flag.BoolVar(&c.verbose, "v", false, "verbose")
 	flag.Parse()
 
 	read := func(arg int) int {

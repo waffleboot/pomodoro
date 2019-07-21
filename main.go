@@ -18,13 +18,19 @@ func main() {
 		case WORK:
 			workCount++
 			workTime += item.elapsed
-			fmt.Printf("%-20s%v\n", "рабочий интервал", p(item.totaltime))
+			if cfg.verbose {
+				fmt.Printf("%-20s%v\n", "рабочий интервал", p(item.totaltime))
+			}
 		case SMALL:
 			relaxTime += item.elapsed
-			fmt.Printf("%-20s%v\n", "короткий перерыв", p(item.totaltime))
+			if cfg.verbose {
+				fmt.Printf("%-20s%v\n", "короткий перерыв", p(item.totaltime))
+			}
 		case LARGE:
 			relaxTime += item.elapsed
-			fmt.Printf("%-20s%v\n", "БОЛЬШОЙ ПЕРЕРЫВ ---", p(item.totaltime))
+			if cfg.verbose {
+				fmt.Printf("%-20s%v\n", "БОЛЬШОЙ ПЕРЕРЫВ ---", p(item.totaltime))
+			}
 		}
 	}
 	fmt.Println("-------------------------")
