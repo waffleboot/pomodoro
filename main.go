@@ -69,8 +69,12 @@ func main() {
 		}
 	}
 	fmt.Println("-------------------------")
-	fmt.Printf("%-20s%v (%d)\n", "работа:", p(workTime), workCount)
-	fmt.Printf("%-20s%v (%d/%d)\n", "отдых:", p(relaxTime), smallCount, largeCount)
-	fmt.Println("-------------------------")
 	fmt.Printf("%-20s%v\n", "полное время:", p(workTime+relaxTime))
+	fmt.Printf("%-20s%v\n", "работа:", p(workTime))
+	fmt.Printf("%-20s%v\n", "отдых:", p(relaxTime))
+	fmt.Printf("%-20s%v\n", "рабочих интервалов", workCount)
+	fmt.Printf("%-20s%v\n", "коротких перерывов", smallCount)
+	if largeCount > 0 {
+		fmt.Printf("%-20s%v\n", "больших перерывов", largeCount)
+	}
 }
