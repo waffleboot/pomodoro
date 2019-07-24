@@ -11,6 +11,17 @@ func p(t int) string {
 	return fmt.Sprintf("%02d:%02d", h, m)
 }
 
+func prefix(item *item, totalTime int) {
+	switch item.typ {
+	case WORK:
+		fmt.Printf("%-20s%v", "рабочий интервал", p(totalTime))
+	case SMALL:
+		fmt.Printf("%-20s%v", "короткий перерыв", p(totalTime))
+	case LARGE:
+		fmt.Printf("%-20s%v", "БОЛЬШОЙ ПЕРЕРЫВ ---", p(totalTime))
+	}
+}
+
 func main() {
 
 	cfg := newConfig()
@@ -21,30 +32,38 @@ func main() {
 		item := &items[i]
 		totalTime += item.elapsed
 		t := now.Add(time.Duration(totalTime) * time.Minute).Format("15:04")
+		prefix(item, totalTime)
 		switch item.typ {
 		case WORK:
 			workCount++
 			workTime += item.elapsed
 			if cfg.verbose {
 				if item.elapsed == cfg.work {
-					fmt.Printf("%-20s%v | %s\n", "рабочий интервал", p(totalTime), t)
+					if cfg.time {
+						fmt.Printf(" | %s", t)
+					}
 				} else {
-					fmt.Printf("%-20s%v | %s +%d\n", "рабочий интервал", p(totalTime), t, item.elapsed)
+					if cfg.time {
+						fmt.Printf(" | %s +%d", t, item.elapsed)
+					} else {
+						fmt.Printf(" +%d", item.elapsed)
+					}
 				}
 			}
 		case SMALL:
 			smallCount++
 			relaxTime += item.elapsed
-			if cfg.verbose {
-				fmt.Printf("%-20s%v | %s\n", "короткий перерыв", p(totalTime), t)
+			if cfg.verbose && cfg.time {
+				fmt.Printf(" | %s", t)
 			}
 		case LARGE:
 			largeCount++
 			relaxTime += item.elapsed
-			if cfg.verbose {
-				fmt.Printf("%-20s%v | %s\n", "БОЛЬШОЙ ПЕРЕРЫВ ---", p(totalTime), t)
+			if cfg.verbose && cfg.time {
+				fmt.Printf(" | %s", t)
 			}
 		}
+		fmt.Println()
 	}
 	fmt.Println("-------------------------")
 	fmt.Printf("%-20s%v\n", "полное время:", p(workTime+relaxTime))

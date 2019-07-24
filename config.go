@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
 	"flag"
 	"fmt"
+	"os"
 	"strconv"
 )
 
@@ -15,6 +15,7 @@ type config struct {
 	timelimit int
 	mode      bool
 	verbose   bool
+	time      bool
 }
 
 func usage() {
@@ -30,6 +31,7 @@ func newConfig() *config {
 	flag.BoolVar(&help, "h", false, "help")
 	flag.BoolVar(&c.mode, "w", false, "mode")
 	flag.BoolVar(&c.verbose, "v", false, "verbose")
+	flag.BoolVar(&c.time, "t", false, "show time")
 	flag.Parse()
 
 	if help {
