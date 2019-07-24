@@ -3,10 +3,6 @@ package main
 import (
 	"fmt"
 	"time"
-	// "net/http"
-	// "os"
-	// "os/signal"
-	// "syscall"
 )
 
 func p(t int) string {
@@ -16,24 +12,6 @@ func p(t int) string {
 }
 
 func main() {
-
-	// graceful shutdown
-
-	// srv := http.Server{}
-	// term := make(chan os.Signal, 1)
-	// exit := make(chan struct{})
-
-	// signal.Notify(term, syscall.SIGTERM)
-	// go func() {
-	// 	<-term
-	// 	srv.Shutdown(ctx)
-	// 	close(exit)
-	// }()
-
-	// err := srv.ListenAndServe()
-	// if err == http.ErrServerClosed {
-	// 	<-exit
-	// }
 
 	cfg := newConfig()
 	var totalTime, workCount, workTime, relaxTime, smallCount, largeCount int
