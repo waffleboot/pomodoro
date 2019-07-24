@@ -6,9 +6,7 @@ import (
 )
 
 func p(t int) string {
-	h := t / 60
-	m := t % 60
-	return fmt.Sprintf("%02d:%02d", h, m)
+	return fmt.Sprintf("%02d:%02d", t/60, t%60)
 }
 
 func prefix(item *item, totalTime int) {
