@@ -30,7 +30,9 @@ func main() {
 		item := &items[i]
 		totalTime += item.elapsed
 		t := now.Add(time.Duration(totalTime) * time.Minute).Format("15:04")
-		prefix(item, totalTime)
+		if cfg.verbose {
+			prefix(item, totalTime)
+		}
 		switch item.typ {
 		case WORK:
 			workCount++
@@ -61,7 +63,9 @@ func main() {
 				fmt.Printf(" | %s", t)
 			}
 		}
-		fmt.Println()
+		if cfg.verbose {
+			fmt.Println()
+		}
 	}
 	fmt.Println("-------------------------")
 	fmt.Printf("%-20s%v\n", "полное время:", p(workTime+relaxTime))
