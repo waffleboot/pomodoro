@@ -23,9 +23,19 @@ func usage() {
 	fmt.Println("usage: pomodoro limit")
 }
 
+func defaultConfig() *config {
+	c := &config{}
+	c.work = 25
+	c.small = 5
+	c.large = 25
+	c.worklimit = 2
+	c.timelimit = parsehhmm("8:00")
+	return c
+}
+
 func newConfig() *config {
 
-	c := &config{}
+	c := defaultConfig()
 
 	var help bool
 	flag.BoolVar(&help, "h", false, "help")
@@ -40,22 +50,11 @@ func newConfig() *config {
 	}
 	if flag.NArg() == 0 {
 		usage()
-		c.work = 25
-		c.small = 5
-		c.large = 25
-		c.worklimit = 2
 		c.timelimit = parsehhmm("8:00")
 	} else if flag.NArg() == 1 {
-		c.work = 25
-		c.small = 5
-		c.large = 25
-		c.worklimit = 2
 		c.timelimit = parsehhmm(flag.Arg(0))
 	} else if flag.NArg() == 2 {
 		c.work = read(0)
-		c.small = 5
-		c.large = 15
-		c.worklimit = 4
 		c.timelimit = parsehhmm(flag.Arg(1))
 	} else {
 		c.work = read(0)
