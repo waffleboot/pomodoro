@@ -71,9 +71,9 @@ func main() {
 	fmt.Printf("%-20s%v\n", "полное время:", p(workTime+relaxTime))
 	fmt.Printf("%-20s%v\n", "работа:", p(workTime))
 	fmt.Printf("%-20s%v\n", "отдых:", p(relaxTime))
-	fmt.Printf("%-20s%v\n", "рабочих интервалов", workCount)
-	fmt.Printf("%-20s%v\n", "коротких перерывов", smallCount)
+	fmt.Printf("%-20s%2v по %2d минут\n", "рабочих интервалов", workCount, cfg.work)
+	fmt.Printf("%-20s%2v по %2d минут\n", "коротких перерывов", smallCount, cfg.small)
 	if largeCount > 0 {
-		fmt.Printf("%-20s%v\n", "больших перерывов", largeCount)
+		fmt.Printf("%-20s%2v по %2d минут\n", "больших перерывов", largeCount, cfg.large)
 	}
 }
