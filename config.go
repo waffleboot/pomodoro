@@ -20,6 +20,7 @@ type config struct {
 
 func usage() {
 	fmt.Println("usage: pomodoro work small large count limit")
+	fmt.Println("usage: pomodoro work limit")
 	fmt.Println("usage: pomodoro limit")
 }
 
@@ -50,18 +51,20 @@ func newConfig() *config {
 	}
 	if flag.NArg() == 0 {
 		usage()
-		c.timelimit = parsehhmm("8:00")
 	} else if flag.NArg() == 1 {
 		c.timelimit = parsehhmm(flag.Arg(0))
 	} else if flag.NArg() == 2 {
 		c.work = read(0)
 		c.timelimit = parsehhmm(flag.Arg(1))
-	} else {
+	} else if flag.NArg() == 5 {
 		c.work = read(0)
 		c.small = read(1)
 		c.large = read(2)
 		c.worklimit = read(3)
 		c.timelimit = parsehhmm(flag.Arg(4))
+	} else {
+		usage()
+		os.Exit(1)
 	}
 
 	return c
