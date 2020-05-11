@@ -50,11 +50,49 @@ func (s *supplier) request() (ans int) {
 	return
 }
 
+func minmax(a, b int) (int, int) {
+	if a < b {
+		return a, b
+	}
+	return b, a
+}
+
+func find(cfg *config) (int, int, int) {
+
+	limit := cfg.timelimit
+	workStart := cfg.work
+	workEnd := cfg.work
+	smallStart := cfg.small
+	smallEnd := cfg.small
+	largeStart := cfg.large
+	largeEnd := cfg.large
+
+	workMin, _ := minmax(workStart, workEnd)
+	smallMin, _ := minmax(smallStart, smallEnd)
+	largeMin, _ := minmax(largeStart, largeEnd)
+
+	for w := limit / workMin; w >= 1; w-- {
+		for s := limit / smallMin; s >= 1; s-- {
+			for l := limit / largeMin; l >= 1; l-- {
+				workSupplier := newSupplier(workStart, workEnd, w)
+				smallSupplier := newSupplier(smallStart, smallEnd, s)
+				largeSupplier := newSupplier(largeStart, largeEnd, l)
+				calcImpl(cfg, func(typ, int) {}, &workSupplier, &smallSupplier, &largeSupplier)
+				if workSupplier.last == workEnd && smallSupplier.last == smallEnd && largeSupplier.last == largeEnd {
+					return w, s, l
+				}
+			}
+		}
+	}
+	return 0, 0, 0
+}
+
 func calc(cfg *config) []item {
+	w, s, l := find(cfg)
 	items := make([]item, 0, 10)
-	workSupplier := newSupplier(cfg.work, cfg.work, 1)
-	smallSupplier := newSupplier(cfg.small, cfg.small, 1)
-	largeSupplier := newSupplier(cfg.large, cfg.large, 1)
+	workSupplier := newSupplier(cfg.work, cfg.work, w)
+	smallSupplier := newSupplier(cfg.small, cfg.small, s)
+	largeSupplier := newSupplier(cfg.large, cfg.large, l)
 	calcImpl(cfg, func(t typ, e int) {
 		items = append(items, item{t, e})
 	}, &workSupplier, &smallSupplier, &largeSupplier)
