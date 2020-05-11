@@ -7,10 +7,15 @@ import (
 	"strconv"
 )
 
+type interval struct {
+	start int
+	end   int
+}
+
 type config struct {
-	work      int
-	small     int
-	large     int
+	work      interval
+	small     interval
+	large     interval
 	worklimit int
 	timelimit int
 	mode      bool
@@ -26,9 +31,9 @@ func usage() {
 
 func defaultConfig() *config {
 	c := &config{}
-	c.work = 25
-	c.small = 5
-	c.large = 25
+	c.work = interval{25, 25}
+	c.small = interval{5, 5}
+	c.large = interval{25, 25}
 	c.worklimit = 2
 	c.timelimit = parsehhmm("8:00")
 	return c
@@ -54,12 +59,12 @@ func newConfig() *config {
 	} else if flag.NArg() == 1 {
 		c.timelimit = parsehhmm(flag.Arg(0))
 	} else if flag.NArg() == 2 {
-		c.work = read(0)
+		c.work = readInterval(0)
 		c.timelimit = parsehhmm(flag.Arg(1))
 	} else if flag.NArg() == 5 {
-		c.work = read(0)
-		c.small = read(1)
-		c.large = read(2)
+		c.work = readInterval(0)
+		c.small = readInterval(1)
+		c.large = readInterval(2)
 		c.worklimit = read(3)
 		c.timelimit = parsehhmm(flag.Arg(4))
 	} else {
@@ -82,4 +87,13 @@ func read(arg int) int {
 		panic(err)
 	}
 	return int(v)
+}
+
+func readInterval(arg int) interval {
+	var i interval
+	if _, err := fmt.Sscanf(flag.Arg(arg), "%d-%d", &i.start, &i.end); err != nil {
+		i.start = read(arg)
+		i.end = i.start
+	}
+	return i
 }

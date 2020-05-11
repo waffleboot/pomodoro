@@ -38,7 +38,7 @@ func main() {
 			workCount++
 			workTime += item.elapsed
 			if cfg.verbose {
-				if item.elapsed == cfg.work {
+				if item.full {
 					if cfg.time {
 						fmt.Printf(" | %s", t)
 					}
@@ -71,9 +71,9 @@ func main() {
 	fmt.Printf("%-20s%v\n", "полное время:", p(workTime+relaxTime))
 	fmt.Printf("%-20s%v\n", "работа:", p(workTime))
 	fmt.Printf("%-20s%v\n", "отдых:", p(relaxTime))
-	fmt.Printf("%-20s%2v по %2d минут\n", "рабочих интервалов", workCount, cfg.work)
-	fmt.Printf("%-20s%2v по %2d минут\n", "коротких перерывов", smallCount, cfg.small)
+	fmt.Printf("%-20s%2v по %2d минут\n", "рабочих интервалов", workCount, cfg.work.start)
+	fmt.Printf("%-20s%2v по %2d минут\n", "коротких перерывов", smallCount, cfg.small.start)
 	if largeCount > 0 {
-		fmt.Printf("%-20s%2v по %2d минут\n", "больших перерывов", largeCount, cfg.large)
+		fmt.Printf("%-20s%2v по %2d минут\n", "больших перерывов", largeCount, cfg.large.start)
 	}
 }
